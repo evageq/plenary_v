@@ -1,5 +1,8 @@
 *.py[cod]
 
+# svlanglanguagesever
+.nvim
+
 # C extensions
 *.so
 *.dll
