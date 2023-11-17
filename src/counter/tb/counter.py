@@ -2,6 +2,10 @@ import cocotb
 from cocotb.triggers import Timer, RisingEdge
 from cocotb.clock import Clock
 
+if cocotb.simulator.is_running():
+    UPPER_BOUND = int(cocotb.top.UPPER_BOUND)
+    STEP = int(cocotb.top.STEP)
+
 
 @cocotb.test()
 async def count_every_num(dut):
@@ -16,16 +20,15 @@ async def count_every_num(dut):
     reset.value = 0
     en.value = 1
 
-    upper_bound = 65536
     start = 0
     expected_val = start
 
-    for i in range(upper_bound):
+    for i in range(UPPER_BOUND):
         await RisingEdge(dut.clk)
         assert expected_val == dut.cnt.value.integer, f"""
         expected = {expected_val}, current_val = {dut.cnt.value.integer}
         """
-        expected_val += 1
+        expected_val += STEP
 
 @cocotb.test()
 async def check_resest(dut):
@@ -39,13 +42,12 @@ async def check_resest(dut):
     en.value = 1
 
 
-    upper_bound = 65536
     start = 0
     expected_val = start
 
     for i in range(10):
         await RisingEdge(dut.clk)
-        expected_val += 1
+        expected_val += STEP
 
     reset.value = 1
     await RisingEdge(dut.clk)
